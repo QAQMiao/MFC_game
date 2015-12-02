@@ -10,11 +10,15 @@ miao::miao(void)
 	state = 1;
 	prestate = 1;
 	cc = true;
+	type = 1;
 }
 
 miao::~miao(void)
 {
 }
+
+
+
 void miao::setDes(int x, int y)
 {
 	fx = x;

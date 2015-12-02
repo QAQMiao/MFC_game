@@ -2,8 +2,7 @@
 //
 
 #pragma once
-#include "miao.h"
-#include "Object.h"
+#include "Animal.h"
 #include "Scene.h"
 
 // CmmDlg 对话框
@@ -11,12 +10,13 @@ class CmmDlg : public CDialog
 {
 // 构造
 public:
-	int now;
+	int now1,now;
 	HBITMAP hBitmap;
-	HBITMAP hPerson[800];
+	HBITMAP hPerson[800],hAnimal[2800];
 	HBITMAP hScene[10];
-	HDC hDCBitmap,hDCperson,hDCScene;
+	HDC hDCBitmap,hDCperson,hDCScene,hDCAnimal;
 	miao mm;
+	Animal ani[20];
 	bool cmp(Scene a, Scene b);
 	Scene sc[10];
 	CmmDlg(CWnd* pParent = NULL);	// 标准构造函数

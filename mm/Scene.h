@@ -11,7 +11,6 @@ public:
 	void setIndex(int i);
 	int getIndex();
 	void changePo();
-	bool operator < (Scene &w) const;
 private:
 	int index;
 };

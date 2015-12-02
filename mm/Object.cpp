@@ -20,6 +20,19 @@ int Object::getH()
 {
 	return height;
 }
+int Object::getIndex()
+{
+	return index;
+}
+
+void Object::setIndex(int i)
+{
+	index = i;
+}
+int Object::getType()
+{
+	return type;
+}
 
 Object::~Object()
 {
@@ -32,4 +45,7 @@ int Object::getX()
 int Object::getY()
 {
 	return sy;
+}
+bool Object::operator < (Object& w) const {
+	return (sy + height) < (w.getY() + w.getH());
 }

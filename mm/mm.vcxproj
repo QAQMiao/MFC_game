@@ -107,6 +107,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animal.cpp" />
     <ClCompile Include="miao.cpp" />
     <ClCompile Include="mm.cpp" />
     <ClCompile Include="mmDlg.cpp" />
@@ -118,6 +119,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animal.h" />
     <ClInclude Include="miao.h" />
     <ClInclude Include="mm.h" />
     <ClInclude Include="mmDlg.h" />

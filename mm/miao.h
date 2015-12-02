@@ -12,7 +12,7 @@ public:
 	int getPreState();
 	void setPreState(int pre);
 	bool cc;
-private:
+protected:
 	int fx,fy;
 	int prestate;
 	int state;

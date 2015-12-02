@@ -5,11 +5,14 @@
 #include "mm.h"
 #include "mmDlg.h"
 #include "algorithm"
+#include "vector"
+
 using namespace std;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+int num;
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -18,13 +21,13 @@ class CAboutDlg : public CDialog
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_ABOUTBOX };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-// 实现
+	// 实现
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -89,7 +92,7 @@ BOOL CmmDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// 将“关于...”菜单项添加到系统菜单中。
-	
+
 	// IDM_ABOUTBOX 必须在系统命令范围内。
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
@@ -170,12 +173,16 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CClientDC dc(this);
-	SelectObject(hDCBitmap,hBitmap);
+	SelectObject(hDCBitmap, hBitmap);
 	DIBSECTION ds;
 	BITMAPINFOHEADER &bm = ds.dsBmih;
 	DIBSECTION ds1;
 	BITMAPINFOHEADER &bm1 = ds1.dsBmih;
-
+	GetObject(hBitmap, sizeof(ds), &ds);
+	int iWidth = bm.biWidth;
+	int iHeight = bm.biHeight;
+	BitBlt(dc.m_hDC, 0, 0, iWidth, iHeight, hDCBitmap, 0, 0, SRCCOPY);
+	int iWidth1, iHeight1;
 
 	if (mm.getState() == 0)
 	{
@@ -202,39 +209,71 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 		now = mm.getState() * 10 + 30;
 		mm.setPreState(mm.getState());
 	}
-	GetObject(hPerson[now], sizeof(ds1), &ds1);
-	int iWidth1 = bm1.biWidth;
-	int iHeight1 = bm1.biHeight;
-	mm.setSize(iWidth1, iHeight1);
-	SelectObject(hDCperson, hPerson[now]);
-
-	//BitBlt(dc.m_hDC,mm.getX(),mm.getY(),iWidth,iHeight,hDCperson,0,0,SRCAND);
-	GetObject(hBitmap,sizeof(ds),&ds);
-	int iWidth = bm.biWidth;
-	int iHeight = bm.biHeight;
-	BitBlt(dc.m_hDC,0,0,iWidth,iHeight,hDCBitmap,0,0,SRCCOPY);
-	int cc = 0;
-	DIBSECTION ds2;
-	mm.move();
-	BITMAPINFOHEADER &bm2 = ds2.dsBmih;
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < num; ++i)
 	{
-		SelectObject(hDCScene, hScene[i]);
-		GetObject(hScene[i], sizeof(ds2), &ds2);
-		int iWidth2 = bm2.biWidth;
-		int iHeight2 = bm2.biHeight;
-		sc[i].setSize(iWidth2, iHeight2);
-		if (!cc && ((sc[i].getH() + sc[i].getY()) > (mm.getH() + mm.getY())))
+		if (ani[i].getState() == 0)
 		{
-			if (mm.getX() <= (640 - 55))
-				TransparentBlt(dc.m_hDC, mm.getX(), mm.getY(), iWidth1, iHeight1, hDCperson, 0, 0, iWidth1, iHeight1, RGB(255, 255, 255));
+			if (ani[i].getPreState() && ani[i].cc)
+			{
+				now1 = (ani[i].getPreState() - 1) * 5;
+				ani[i].cc = false;
+			}
 			else
-				TransparentBlt(dc.m_hDC, 640 - 55, mm.getY(), iWidth1, iHeight1, hDCperson, 0, 0, iWidth1, iHeight1, RGB(255, 255, 255));
-			cc++;
+			{
+				now1 = (now1 + 1) % 5;
+				now1 += (ani[i].getPreState() - 1) * 5;
+			}
 		}
-		TransparentBlt(dc.m_hDC, sc[i].getX(), sc[i].getY(), min(640 - sc[i].getX(), iWidth2), iHeight2, hDCScene, 0, 0, min(640 - sc[i].getX(), iWidth2), iHeight2, RGB(255, 255, 255));
+		else if (ani[i].getPreState() == ani[i].getState())
+		{
+			ani[i].cc = true;
+			now1 = (now1 + 1) % 10;
+			now1 += ani[i].getState() * 10 + 30;
+		}
+		else
+		{
+			ani[i].cc = true;
+			now1 = ani[i].getState() * 10 + 30;
+			ani[i].setPreState(ani[i].getState());
+		}
+		ani[i].move();
 	}
+	GetObject(hPerson[now], sizeof(ds), &ds);
+	int iWidth1 = bm.biWidth;
+	int iHeight1 = bm.biHeight;
+	mm.setSize(iWidth1, iHeight1);
 
+	vector<Object> vec;
+	vec.push_back(mm);
+	mm.move();
+	mm.setIndex(now);
+	for (int i = 0; i < 8; ++i)
+		vec.push_back(sc[i]);
+	for (int i = 0; i < num; ++i)
+		vec.push_back(ani[i]);
+	sort(vec.begin(), vec.end());
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i].getType() == 1)
+		{
+			SelectObject(hDCperson, hPerson[now]);
+			GetObject(hPerson[now], sizeof(ds1), &ds1);
+		}
+		else if (vec[i].getType() == 2)
+		{
+			SelectObject(hDCScene, hScene[vec[i].getIndex()]);
+			GetObject(hScene[vec[i].getIndex()], sizeof(ds1), &ds1);
+		}
+		else
+		{
+			SelectObject(hDCAnimal, hAnimal[vec[i].getIndex()]);
+			GetObject(hAnimal[vec[i].getIndex()], sizeof(ds1), &ds1);
+		}
+		iWidth1 = bm1.biWidth;
+		iHeight1 = bm1.biHeight;
+		TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCScene, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
+	}
+	
 	CDialog::OnTimer(nIDEvent);
 }
 
@@ -242,35 +281,32 @@ void CmmDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CClientDC dc(this);
-	hBitmap = (HBITMAP)LoadImage(AfxGetInstanceHandle(),"图片/地面A.BMP",IMAGE_BITMAP,0,0,LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+	hBitmap = (HBITMAP)LoadImage(AfxGetInstanceHandle(), "图片/地面A.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	hDCBitmap = CreateCompatibleDC(dc);
 	hDCperson = CreateCompatibleDC(dc);
-	for(int i = 0;i < 800;++i)
+	for (int i = 0; i < 800; ++i)
 	{
 		CString name = "图片/人/c";
 		char num[10];
-		sprintf(num,"%05d",i);
+		sprintf(num, "%05d", i);
 		name += num;
 		name += ".bmp";
-		hPerson[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(),name,IMAGE_BITMAP,0,0,LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+		hPerson[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		sc[i].setIndex(i);
 	}
-	SetTimer(0,50,NULL);
+	SetTimer(0, 50, NULL);
 }
 
 void CmmDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	mm.setDes(point.x,point.y);
+	mm.setDes(point.x, point.y);
 	/*char sOut[128] = {0};
 	sprintf(sOut,"%d %d",point.x,point.y);
 	MessageBox(sOut,"",MB_OK);*/
 	CDialog::OnLButtonDblClk(nFlags, point);
 }
 
-bool cmp(Scene& a,Scene& b)
-{
-	return (a.getY() + a.getH()) < (b.getY() + b.getH());
-}
 
 void CmmDlg::OnBnClickedButton2()
 {
@@ -304,6 +340,19 @@ void CmmDlg::OnBnClickedButton2()
 		hScene[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		sc[i].changePo();
 	}
-	sort(sc, sc + 8);
+	for (int i = 0; i < 2800; ++i)
+	{
+		CString name = "图片/兽/c";
+		char num[10];
+		sprintf(num, "%05d", i);
+		name += num;
+		name += ".bmp";
+		hAnimal[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	}
+	num = rand() % 20;
+	for (int i = 0; i < num; ++i)
+	{
+		ani[i].setIndex(rand() % 7);
+	}
 	SetTimer(0, 50, NULL);
 }
