@@ -1,24 +1,30 @@
-﻿Build started 2015/12/2 17:49:20.
+﻿Build started 2015/12/3 22:48:27.
      1>Project "C:\Users\miaomiao\Desktop\Miao\byMyself\mm\mm\mm.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\Download\vs2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\mm.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Animal.cpp Object.cpp Scene.cpp miao.cpp mm.cpp mmDlg.cpp
+         D:\Download\vs2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\mm.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt mmDlg.cpp
          mmDlg.cpp
-     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(242): error C2086: 'int iWidth1' : redefinition
-                 c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(185) : see declaration of 'iWidth1'
-     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(243): error C2086: 'int iHeight1' : redefinition
-                 c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(185) : see declaration of 'iHeight1'
-     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(255): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(320): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-         miao.cpp
-         Object.cpp
-         Generating Code...
-         Compiling...
-         mm.cpp
-         Scene.cpp
-         Animal.cpp
-         Generating Code...
-     1>Done Building Project "C:\Users\miaomiao\Desktop\Miao\byMyself\mm\mm\mm.vcxproj" (Build target(s)) -- FAILED.
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(266): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(311): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\download\vs2013\vc\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(340): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(346): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\download\vs2013\vc\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(357): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\download\vs2013\vc\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\miaomiao\desktop\miao\bymyself\mm\mm\mmdlg.cpp(368): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\download\vs2013\vc\include\stdio.h(356) : see declaration of 'sprintf'
+       Link:
+         D:\Download\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:D:\Download\vs2013\VC\Include\Manifest\dpiaware.manifest /DEBUG /PDB:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.lib" /MACHINE:X86 /SAFESEH Debug\mm.res
+         Debug\Animal.obj
+         Debug\miao.obj
+         Debug\mm.obj
+         Debug\mmDlg.obj
+         Debug\Object.obj
+         Debug\Scene.obj
+         Debug\stdafx.obj
+         mm.vcxproj -> C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.exe
+     1>Done Building Project "C:\Users\miaomiao\Desktop\Miao\byMyself\mm\mm\mm.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:10.46
+Time Elapsed 00:00:05.35

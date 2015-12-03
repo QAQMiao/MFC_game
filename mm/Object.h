@@ -13,6 +13,7 @@ public:
 	int getIndex();
 	void setIndex(int i);
 	bool operator < (Object &w) const;
+	int now;
 protected:
 	int sx, sy;
 	int type;

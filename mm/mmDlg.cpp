@@ -5,7 +5,9 @@
 #include "mm.h"
 #include "mmDlg.h"
 #include "algorithm"
+#include "iostream"
 #include "vector"
+#include "memory"
 
 using namespace std;
 #ifdef _DEBUG
@@ -58,15 +60,16 @@ CmmDlg::CmmDlg(CWnd* pParent /*=NULL*/)
 }
 CmmDlg::~CmmDlg() {
 	DeleteDC(hDCBitmap);
-	DeleteDC(hDCperson);
+	DeleteDC(hDCPerson);
 	DeleteDC(hDCScene);
+	DeleteDC(hDCAnimal);
 	DeleteObject(hBitmap);
-	DeleteObject(hPerson);
-	DeleteObject(hScene);
-	for (int i = 0; i < 800; i++)
+	for (int i = 0; i < 800; ++i)
 		DeleteObject(hPerson[i]);
 	for (int i = 0; i < 10; ++i)
 		DeleteObject(hScene[i]);
+	for (int i = 0; i < 2850;++i)
+		DeleteObject(hAnimal[i]);
 }
 void CmmDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -91,6 +94,9 @@ BOOL CmmDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	AllocConsole();
+	FILE * m_new_stdout_file = nullptr;
+	freopen_s(&m_new_stdout_file, "CONOUT$", "w+t", stdout);
 	// 将“关于...”菜单项添加到系统菜单中。
 
 	// IDM_ABOUTBOX 必须在系统命令范围内。
@@ -173,17 +179,16 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CClientDC dc(this);
-	SelectObject(hDCBitmap, hBitmap);
 	DIBSECTION ds;
 	BITMAPINFOHEADER &bm = ds.dsBmih;
 	DIBSECTION ds1;
 	BITMAPINFOHEADER &bm1 = ds1.dsBmih;
+	SelectObject(hDCBitmap, hBitmap);
 	GetObject(hBitmap, sizeof(ds), &ds);
 	int iWidth = bm.biWidth;
 	int iHeight = bm.biHeight;
 	BitBlt(dc.m_hDC, 0, 0, iWidth, iHeight, hDCBitmap, 0, 0, SRCCOPY);
 	int iWidth1, iHeight1;
-
 	if (mm.getState() == 0)
 	{
 		if (mm.getPreState() && mm.cc)
@@ -211,36 +216,42 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	for (int i = 0; i < num; ++i)
 	{
+		int ext = ani[i].getIndex() * 400;
 		if (ani[i].getState() == 0)
 		{
 			if (ani[i].getPreState() && ani[i].cc)
 			{
-				now1 = (ani[i].getPreState() - 1) * 5;
+				ani[i].now = (ani[i].getPreState() - 1) * 5 + ext;
 				ani[i].cc = false;
 			}
 			else
 			{
-				now1 = (now1 + 1) % 5;
-				now1 += (ani[i].getPreState() - 1) * 5;
+				ani[i].now = (ani[i].now + 1) % 5;
+				ani[i].now += (ani[i].getPreState() - 1) * 5 + ext;
 			}
 		}
 		else if (ani[i].getPreState() == ani[i].getState())
 		{
 			ani[i].cc = true;
-			now1 = (now1 + 1) % 10;
-			now1 += ani[i].getState() * 10 + 30;
+			ani[i].now = (ani[i].now + 1) % 10;
+			ani[i].now += ani[i].getState() * 10 + 30 + ext;
 		}
 		else
 		{
 			ani[i].cc = true;
-			now1 = ani[i].getState() * 10 + 30;
+			ani[i].now = ani[i].getState() * 10 + 30 + ext;
 			ani[i].setPreState(ani[i].getState());
 		}
 		ani[i].move();
+		ani[i].cc++;
+		if (ani[i].cc == 10)
+		{
+			ani[i].cc = 0;
+			ani[i].setDes();
+		}
 	}
-	GetObject(hPerson[now], sizeof(ds), &ds);
-	int iWidth1 = bm.biWidth;
-	int iHeight1 = bm.biHeight;
+	iWidth1 = bm.biWidth;
+	iHeight1 = bm.biHeight;
 	mm.setSize(iWidth1, iHeight1);
 
 	vector<Object> vec;
@@ -256,24 +267,33 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		if (vec[i].getType() == 1)
 		{
-			SelectObject(hDCperson, hPerson[now]);
+			SelectObject(hDCPerson, hPerson[now]);
 			GetObject(hPerson[now], sizeof(ds1), &ds1);
+			iWidth1 = bm1.biWidth;
+			iHeight1 = bm1.biHeight;
+			TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCPerson, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
 		}
 		else if (vec[i].getType() == 2)
 		{
-			SelectObject(hDCScene, hScene[vec[i].getIndex()]);
-			GetObject(hScene[vec[i].getIndex()], sizeof(ds1), &ds1);
+			SelectObject(hDCScene, hScene[vec[i].now]);
+			GetObject(hScene[vec[i].now], sizeof(ds1), &ds1);
+			iWidth1 = bm1.biWidth;
+			iHeight1 = bm1.biHeight;
+			TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCScene, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
 		}
 		else
 		{
-			SelectObject(hDCAnimal, hAnimal[vec[i].getIndex()]);
-			GetObject(hAnimal[vec[i].getIndex()], sizeof(ds1), &ds1);
+			int in = vec[i].now;
+			SelectObject(hDCAnimal, hAnimal[vec[i].now]);
+			GetObject(hAnimal[vec[i].now], sizeof(ds1), &ds1);
+			iWidth1 = bm1.biWidth;
+			iHeight1 = bm1.biHeight;
+			int x = vec[i].getX();
+			int y = vec[i].getY();
+			TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCAnimal, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
 		}
-		iWidth1 = bm1.biWidth;
-		iHeight1 = bm1.biHeight;
-		TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCScene, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
 	}
-	
+	vec.clear();
 	CDialog::OnTimer(nIDEvent);
 }
 
@@ -283,7 +303,7 @@ void CmmDlg::OnBnClickedButton1()
 	CClientDC dc(this);
 	hBitmap = (HBITMAP)LoadImage(AfxGetInstanceHandle(), "图片/地面A.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	hDCBitmap = CreateCompatibleDC(dc);
-	hDCperson = CreateCompatibleDC(dc);
+	hDCPerson = CreateCompatibleDC(dc);
 	for (int i = 0; i < 800; ++i)
 	{
 		CString name = "图片/人/c";
@@ -314,9 +334,9 @@ void CmmDlg::OnBnClickedButton2()
 	CClientDC dc(this);
 	hBitmap = (HBITMAP)LoadImage(AfxGetInstanceHandle(), "图片/地面A.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	hDCBitmap = CreateCompatibleDC(dc);
-	hDCperson = CreateCompatibleDC(dc);
+	hDCPerson = CreateCompatibleDC(dc);
 	hDCScene = CreateCompatibleDC(dc);
-
+	hDCAnimal = CreateCompatibleDC(dc);
 	srand(time(NULL));
 
 	for (int i = 0; i < 200; ++i)
@@ -340,7 +360,8 @@ void CmmDlg::OnBnClickedButton2()
 		hScene[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		sc[i].changePo();
 	}
-	for (int i = 0; i < 2800; ++i)
+	int i;
+	for (i = 0; i < 2800; ++i)
 	{
 		CString name = "图片/兽/c";
 		char num[10];
@@ -348,6 +369,8 @@ void CmmDlg::OnBnClickedButton2()
 		name += num;
 		name += ".bmp";
 		hAnimal[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		cout << hAnimal[i] << endl;
+		sc[i].now = i;
 	}
 	num = rand() % 20;
 	for (int i = 0; i < num; ++i)

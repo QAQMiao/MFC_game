@@ -10,11 +10,11 @@ class CmmDlg : public CDialog
 {
 // ππ‘Ï
 public:
-	int now1,now;
+	int now;
 	HBITMAP hBitmap;
-	HBITMAP hPerson[800],hAnimal[2800];
+	HBITMAP hPerson[800],hAnimal[2810];
 	HBITMAP hScene[10];
-	HDC hDCBitmap,hDCperson,hDCScene,hDCAnimal;
+	HDC hDCBitmap,hDCPerson,hDCScene,hDCAnimal;
 	miao mm;
 	Animal ani[20];
 	bool cmp(Scene a, Scene b);
