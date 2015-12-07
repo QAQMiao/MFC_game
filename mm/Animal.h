@@ -8,6 +8,7 @@ public:
 	~Animal();
 	void setDes();
 	int cc;
+	int cnow;
 private:
 	int v;
 };

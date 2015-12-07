@@ -183,6 +183,10 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 	BITMAPINFOHEADER &bm = ds.dsBmih;
 	DIBSECTION ds1;
 	BITMAPINFOHEADER &bm1 = ds1.dsBmih;
+	DIBSECTION ds2;
+	BITMAPINFOHEADER &bm2 = ds2.dsBmih;
+	DIBSECTION ds3;
+	BITMAPINFOHEADER &bm3 = ds3.dsBmih;
 	SelectObject(hDCBitmap, hBitmap);
 	GetObject(hBitmap, sizeof(ds), &ds);
 	int iWidth = bm.biWidth;
@@ -216,6 +220,12 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	for (int i = 0; i < num; ++i)
 	{
+		ani[i].cnow++;
+		if (ani[i].cnow == 50)
+		{
+			ani[i].cnow = 0;
+			ani[i].setDes();
+		}
 		int ext = ani[i].getIndex() * 400;
 		if (ani[i].getState() == 0)
 		{
@@ -243,17 +253,25 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 			ani[i].setPreState(ani[i].getState());
 		}
 		ani[i].move();
-		ani[i].cc++;
-		if (ani[i].cc == 10)
-		{
-			ani[i].cc = 0;
-			ani[i].setDes();
-		}
 	}
-	iWidth1 = bm.biWidth;
-	iHeight1 = bm.biHeight;
+	GetObject(hPerson[now], sizeof(ds1), &ds1);
+	iWidth1 = bm1.biWidth;
+	iHeight1 = bm1.biHeight;
 	mm.setSize(iWidth1, iHeight1);
-
+	for (int i = 0; i < 8; ++i)
+	{
+		GetObject(hScene[sc[i].now], sizeof(ds1), &ds1);
+		iWidth1 = bm1.biWidth;
+		iHeight1 = bm1.biHeight;
+		sc[i].setSize(iWidth1, iHeight1);
+	}
+	for (int i = 0; i < num; ++i)
+	{
+		GetObject(hAnimal[ani[i].now], sizeof(ds1), &ds1);
+		iWidth1 = bm1.biWidth;
+		iHeight1 = bm1.biHeight;
+		ani[i].setSize(iWidth1, iHeight1);
+	}
 	vector<Object> vec;
 	vec.push_back(mm);
 	mm.move();
@@ -265,6 +283,10 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 	sort(vec.begin(), vec.end());
 	for (int i = 0; i < vec.size(); ++i)
 	{
+		int iy = vec[i].getY();
+		int ix = vec[i].getX();
+		int i_now = vec[i].now;
+		int i_type = vec[i].getType();
 		if (vec[i].getType() == 1)
 		{
 			SelectObject(hDCPerson, hPerson[now]);
@@ -276,18 +298,17 @@ void CmmDlg::OnTimer(UINT_PTR nIDEvent)
 		else if (vec[i].getType() == 2)
 		{
 			SelectObject(hDCScene, hScene[vec[i].now]);
-			GetObject(hScene[vec[i].now], sizeof(ds1), &ds1);
-			iWidth1 = bm1.biWidth;
-			iHeight1 = bm1.biHeight;
+			GetObject(hScene[vec[i].now], sizeof(ds2), &ds2);
+			iWidth1 = bm2.biWidth;
+			iHeight1 = bm2.biHeight;
 			TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCScene, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
 		}
 		else
 		{
-			int in = vec[i].now;
 			SelectObject(hDCAnimal, hAnimal[vec[i].now]);
-			GetObject(hAnimal[vec[i].now], sizeof(ds1), &ds1);
-			iWidth1 = bm1.biWidth;
-			iHeight1 = bm1.biHeight;
+			GetObject(hAnimal[vec[i].now], sizeof(ds3), &ds3);
+			iWidth1 = bm3.biWidth;
+			iHeight1 = bm3.biHeight;
 			int x = vec[i].getX();
 			int y = vec[i].getY();
 			TransparentBlt(dc.m_hDC, vec[i].getX(), vec[i].getY(), min(640 - vec[i].getX(), iWidth1), iHeight1, hDCAnimal, 0, 0, min(640 - vec[i].getX(), iWidth1), iHeight1, RGB(255, 255, 255));
@@ -359,6 +380,7 @@ void CmmDlg::OnBnClickedButton2()
 		name += ".bmp";
 		hScene[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		sc[i].changePo();
+		sc[i].now = i;
 	}
 	int i;
 	for (i = 0; i < 2800; ++i)
@@ -369,13 +391,14 @@ void CmmDlg::OnBnClickedButton2()
 		name += num;
 		name += ".bmp";
 		hAnimal[i] = (HBITMAP)LoadImage(AfxGetInstanceHandle(), name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		cout << hAnimal[i] << endl;
-		sc[i].now = i;
 	}
-	num = rand() % 20;
+	num = rand() % 12;
 	for (int i = 0; i < num; ++i)
 	{
-		ani[i].setIndex(rand() % 7);
+		int cc = rand() % 7;
+		while (cc == 4)
+			cc = rand() % 7;
+		ani[i].setIndex(cc);
 	}
 	SetTimer(0, 50, NULL);
 }

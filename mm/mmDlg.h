@@ -16,7 +16,7 @@ public:
 	HBITMAP hScene[10];
 	HDC hDCBitmap,hDCPerson,hDCScene,hDCAnimal;
 	miao mm;
-	Animal ani[20];
+	Animal ani[100];
 	bool cmp(Scene a, Scene b);
 	Scene sc[10];
 	CmmDlg(CWnd* pParent = NULL);	// 标准构造函数
