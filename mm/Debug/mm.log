@@ -1,5 +1,18 @@
-﻿Build started 2015/12/7 14:40:12.
+﻿Build started 2015/12/7 17:06:27.
+     1>Project "C:\Users\miaomiao\Desktop\Miao\byMyself\mm\mm\mm.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         D:\Download\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.exe" /INCREMENTAL /NOLOGO Dsound.lib dxguid.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:D:\Download\vs2013\VC\Include\Manifest\dpiaware.manifest /DEBUG /PDB:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.lib" /MACHINE:X86 /SAFESEH Debug\mm.res
+         Debug\Animal.obj
+         Debug\miao.obj
+         Debug\mm.obj
+         Debug\mmDlg.obj
+         Debug\Object.obj
+         Debug\Scene.obj
+         Debug\stdafx.obj
+     1>Animal.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+         mm.vcxproj -> C:\Users\miaomiao\Desktop\Miao\byMyself\mm\Debug\mm.exe
+     1>Done Building Project "C:\Users\miaomiao\Desktop\Miao\byMyself\mm\mm\mm.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.06
+Time Elapsed 00:00:06.37

@@ -8,7 +8,8 @@
 #include "iostream"
 #include "vector"
 #include "memory"
-
+#include "mmsystem.h"
+#pragma comment(lib,"winmm.lib")
 using namespace std;
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +86,7 @@ BEGIN_MESSAGE_MAP(CmmDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &CmmDlg::OnBnClickedButton1)
 	ON_WM_LBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_BUTTON2, &CmmDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CmmDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -401,4 +403,12 @@ void CmmDlg::OnBnClickedButton2()
 		ani[i].setIndex(cc);
 	}
 	SetTimer(0, 50, NULL);
+}
+
+
+void CmmDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	IDirectSound8 *m_pDS = NULL;
+	DirectSoundCreate8(NULL, &m_pDS, NULL);
 }

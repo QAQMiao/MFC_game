@@ -46,4 +46,5 @@ public:
 public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
 };
